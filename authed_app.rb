@@ -10,6 +10,7 @@ gem "pg"
 
 gem "unicorn"
 gem "foreman"
+gem "devise"
 
 gem_group :development, :test do
   gem 'rspec-rails', '2.13.0'
@@ -139,10 +140,23 @@ DATABASE
 run "bundle install"
 
 generate "rspec:install"
-run "guard init"
+run "bundle exec guard init"
 run "rm config/database.yml; cp config/database.yml.example config/database.yml"
 rake "db:create:all"
+
+run "rm public/index.html"
+generate "devise:install"
+generate "devise User"
+generate "devise:views"
+
+rake "db:migrate db:test:prepare"
+
+environment "config.action_mailer.default_url_options = {host: 'localhost:#{port}'}", env: 'development'
+
+route "root to: 'devise/sessions#new'"
+
 
 git :init
 git add: "."
 git commit: %Q{ -m 'Initial commit' }
+
