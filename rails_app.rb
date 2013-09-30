@@ -7,6 +7,7 @@
 gem "pg"
 
 gem "unicorn"
+gem "foreman"
 
 gem_group :development, :test do
   gem 'rspec-rails', '2.13.0'
@@ -63,6 +64,20 @@ RSpec.configure do |config|
   #config.include Rails.application.routes.url_helpers
 end
 CAPYBARA
+
+file "config/unicorn.rb", <<-UNICORN
+worker_processes 3
+timeout 30
+UNICORN
+
+file ".env", <<-DOTENV
+PORT=5000
+RACK_ENV=development"
+DOTENV
+
+file "Procfile", <<-PROCFILE
+web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
+PROCFILE
 
 file "spec/support/focus.rb", <<-FOCUS
 RSpec.configure do |config|
