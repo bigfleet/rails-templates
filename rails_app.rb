@@ -72,7 +72,7 @@ UNICORN
 
 file ".env", <<-DOTENV
 PORT=5000
-RACK_ENV=development"
+RACK_ENV=development
 DOTENV
 
 file "Procfile", <<-PROCFILE
@@ -133,6 +133,8 @@ production:
   pool: 5
   min_messages: warning
 DATABASE
+
+run "bundle install"
 
 generate "rspec:install"
 run "guard init"
