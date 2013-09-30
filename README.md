@@ -22,16 +22,16 @@ Usage
 The basic application can be created with this command:
 
 ```
-rails new -m https://raw.github.com/bigfleet/rails-templates/master/rails_app.rb
-YOUR_APP_NAME_HERE
+rails new YOUR_APP_NAME_HERE -m https://raw.github.com/bigfleet/rails-templates/master/rails_app.rb
+
 ```
 
 An application that includes a reasonable devise install can be installed this
 way:
 
 ```
-rails new -m https://raw.github.com/bigfleet/rails-templates/master/authed_app.rb
-YOUR_APP_NAME_HERE
+rails new YOUR_APP_NAME_HERE -m https://raw.github.com/bigfleet/rails-templates/master/authed_app.rb
+
 ```
 
 If you have used the template more than once, you may want to put the
@@ -39,9 +39,12 @@ application on a different port.  You can do so in the command with one that
 prepends ```PORT=5001``` like this:
 
 ```
-PORT=5001 rails new -m https://raw.github.com/bigfleet/rails-templates/master/rails_app.rb
-YOUR_APP_NAME_HERE
+PORT=5001 rails new YOUR_APP_NAME_HERE
+ -m https://raw.github.com/bigfleet/rails-templates/master/rails_app.rb
 ```
+
+You will need to hit 'y' once, as I've specified some additions to a file that
+Rails has opinions on.
 
 
 Libraries

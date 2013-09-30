@@ -11,6 +11,8 @@ gem "pg"
 gem "unicorn"
 gem "foreman"
 gem "devise"
+gem 'anjlab-bootstrap-rails', :require => 'bootstrap-rails',
+                              :github => 'anjlab/bootstrap-rails'
 
 gem_group :development, :test do
   gem 'rspec-rails', '2.13.0'
@@ -151,10 +153,22 @@ generate "devise:views"
 
 rake "db:migrate db:test:prepare"
 
+# Handles two suggestions from Devise install process
+
 environment "config.action_mailer.default_url_options = {host: 'localhost:#{port}'}", env: 'development'
 
-route "root to: 'devise/sessions#new'"
+route "devise_scope :user do; root to: 'devise/sessions#new'; end"
 
+# Installs twitter bootstrap
+#
+
+if yes?("Use Twitter bootstrap?")
+  run "mv app/assets/stylesheets/application.css app/assets/stylesheets/application.css.scss"
+  run "echo '@import \"twitter/bootstrap\";' > app/assets/stylesheets/application.css.scss"
+  run "echo '//= require twitter/bootstrap' > app/assets/javascripts/application.js"
+else
+  puts "Please inspect your Gemfile to remove the gem"
+end
 
 git :init
 git add: "."
