@@ -1,5 +1,8 @@
 port = ENV["PORT"] || "5000"
 
+require 'rbconfig'
+is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
+
 # Standardize on postgres
 #   Check/assume logged-in user can create databases
 #   Use min_warnings
@@ -8,8 +11,15 @@ port = ENV["PORT"] || "5000"
 #
 gem "pg"
 
-gem "unicorn"
-gem "foreman"
+if is_windows
+  gem "thin"
+  # https://github.com/ddollar/foreman/issues/348
+  gem "foreman", "0.61"
+ else
+  gem "unicorn"
+  gem "foreman"
+end
+
 gem "devise"
 gem 'anjlab-bootstrap-rails', :require => 'bootstrap-rails',
                               :github => 'anjlab/bootstrap-rails'
@@ -70,20 +80,6 @@ RSpec.configure do |config|
 end
 CAPYBARA
 
-file "config/unicorn.rb", <<-UNICORN
-worker_processes 3
-timeout 30
-UNICORN
-
-file ".env", <<-DOTENV
-PORT=#{port}
-RACK_ENV=development
-DOTENV
-
-file "Procfile", <<-PROCFILE
-web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
-PROCFILE
-
 file "spec/support/focus.rb", <<-FOCUS
 RSpec.configure do |config|
   config.filter_run :focused => true
@@ -97,6 +93,27 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 end
 FACTORY_GIRL
+
+file ".env", <<-DOTENV
+PORT=#{port}
+RACK_ENV=development
+DOTENV
+
+if is_windows
+  file "Procfile", <<-PROCFILE
+web: bundle exec thin start -p $PORT
+PROCFILE
+
+else
+  file "config/unicorn.rb", <<-UNICORN
+worker_processes 3
+timeout 30
+UNICORN
+
+  file "Procfile", <<-PROCFILE
+web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
+PROCFILE
+end
 
 app_name = ARGV[0]
 
@@ -143,7 +160,10 @@ run "bundle install"
 
 generate "rspec:install"
 run "bundle exec guard init"
-run "rm config/database.yml; cp config/database.yml.example config/database.yml"
+if is_windows
+else
+  run "rm config/database.yml; cp config/database.yml.example config/database.yml"
+end
 rake "db:create:all"
 
 run "rm public/index.html"

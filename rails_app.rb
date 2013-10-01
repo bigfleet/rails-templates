@@ -13,10 +13,13 @@ is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
   gem "pg"
 if is_windows
   gem "thin"
+  # https://github.com/ddollar/foreman/issues/348
+  gem "foreman", "0.61"
  else
   gem "unicorn"
+  gem "foreman"
 end
-gem "foreman"
+
 
 gem_group :development, :test do
   gem 'rspec-rails', '2.13.0'
@@ -74,6 +77,19 @@ RSpec.configure do |config|
 end
 CAPYBARA
 
+file "spec/support/focus.rb", <<-FOCUS
+RSpec.configure do |config|
+  config.filter_run :focused => true
+  config.run_all_when_everything_filtered = true
+  config.alias_example_to :fit, :focused => true
+end
+FOCUS
+
+file "spec/support/factory_girl.rb", <<-FACTORY_GIRL
+RSpec.configure do |config|
+  config.include FactoryGirl::Syntax::Methods
+end
+FACTORY_GIRL
 
 file ".env", <<-DOTENV
 PORT=#{port}
@@ -95,20 +111,6 @@ UNICORN
 web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
 PROCFILE
 end
-
-file "spec/support/focus.rb", <<-FOCUS
-RSpec.configure do |config|
-  config.filter_run :focused => true
-  config.run_all_when_everything_filtered = true
-  config.alias_example_to :fit, :focused => true
-end
-FOCUS
-
-file "spec/support/factory_girl.rb", <<-FACTORY_GIRL
-RSpec.configure do |config|
-  config.include FactoryGirl::Syntax::Methods
-end
-FACTORY_GIRL
 
 app_name = ARGV[0]
 
@@ -154,8 +156,11 @@ DATABASE
 run "bundle install"
 
 generate "rspec:install"
-run "guard init"
-run "rm config/database.yml; cp config/database.yml.example config/database.yml"
+run "bundle exec guard init"
+if is_windows
+else
+  run "rm config/database.yml; cp config/database.yml.example config/database.yml"
+end
 rake "db:create:all"
 
 git :init
