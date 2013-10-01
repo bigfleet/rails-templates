@@ -1,14 +1,21 @@
 port = ENV["PORT"] || "5000"
 
+require 'rbconfig'
+is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
+
 # Standardize on postgres
 #   Check/assume logged-in user can create databases
 #   Use min_warnings
 #   config/database.yml.example and perform overwrite
 #   Write to readme
 #
-gem "pg"
 
-gem "unicorn"
+  gem "pg"
+if is_windows
+  gem "thin"
+ else
+  gem "unicorn"
+end
 gem "foreman"
 
 gem_group :development, :test do
@@ -67,19 +74,27 @@ RSpec.configure do |config|
 end
 CAPYBARA
 
-file "config/unicorn.rb", <<-UNICORN
-worker_processes 3
-timeout 30
-UNICORN
 
 file ".env", <<-DOTENV
 PORT=#{port}
 RACK_ENV=development
 DOTENV
 
-file "Procfile", <<-PROCFILE
+if is_windows
+  file "Procfile", <<-PROCFILE
+web: bundle exec thin start -p $PORT
+PROCFILE
+
+else
+  file "config/unicorn.rb", <<-UNICORN
+worker_processes 3
+timeout 30
+UNICORN
+
+  file "Procfile", <<-PROCFILE
 web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
 PROCFILE
+end
 
 file "spec/support/focus.rb", <<-FOCUS
 RSpec.configure do |config|
