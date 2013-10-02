@@ -62,10 +62,11 @@ GITIGNORE
 
 
 environment <<-APP_GENERATORS
-    config.generators do |g|
-      g.orm :active_record
-      g.fixture_replacement :factory_girl, :dir => "spec/factories"
-    end
+  config.generators do |g|
+    g.orm :active_record
+    g.fixture_replacement :factory_girl, :dir => "spec/factories"
+  end
+  config.time_zone = 'Eastern Time (US & Canada)'
 APP_GENERATORS
 
 file "spec/support/capybara.rb", <<-CAPYBARA
