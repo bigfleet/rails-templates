@@ -66,7 +66,7 @@ GITIGNORE
 environment <<-APP_GENERATORS
     config.generators do |g|
       g.orm :active_record
-      g.fixture_replacement :factory_girl
+      g.fixture_replacement :factory_girl, :dir => "spec/factories"
     end
 APP_GENERATORS
 
