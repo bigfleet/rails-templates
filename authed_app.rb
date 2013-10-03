@@ -168,6 +168,7 @@ DATABASE
 run "bundle install"
 
 generate "rspec:install"
+run "mkdir spec/features"
 run "bundle exec guard init"
 if is_windows
 else
@@ -186,7 +187,9 @@ rake "db:migrate db:test:prepare"
 
 environment "config.action_mailer.default_url_options = {host: 'localhost:#{port}'}", env: 'development'
 
-route "devise_scope :user do; root to: 'devise/sessions#new'; end"
+generate "controller welcome index"
+
+route "root to: 'welcome#index'"
 
 # Installs twitter bootstrap
 #
