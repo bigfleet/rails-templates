@@ -37,6 +37,7 @@ gem_group :test do
   gem 'factory_girl_rails', '4.1.0'
   gem 'forgery'
   gem 'launchy'
+  gem 'database_cleaner'
 end
 
 file '.gitignore', <<-GITIGNORE
@@ -99,6 +100,26 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 end
 FACTORY_GIRL
+
+file "spec/support/db_cleaner.rb", <<-DB_CLEANER
+require 'database_cleaner'
+RSpec.configure do |config|
+
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+
+end
+DB_CLEANER
 
 file ".env", <<-DOTENV
 PORT=#{port}
