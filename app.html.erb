@@ -1,46 +1,83 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Aitfc</title>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+    <title><%= content_for(:title) || "Jumbotron Template for Bootstrap" %></title>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
 </head>
 <body>
 
-<div class="navbar">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="brand" href="/"><span>Your Site Name</span></a>
-      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <% if user_signed_in? %>
-            <span class="icon-bar">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                        <% if user_signed_in? %>
+                          <li>
               <%= link_to "Sign Out", destroy_user_session_path, method: :delete %>
-            </span>
+              </li>
         <% else %>
-            <span class="icon-bar">
+          <li>
               <%= link_to "Sign In", new_user_session_path %>
-            </span>
-            <span class="icon-bar">
+              </li>
+              <li>
               <%= link_to "Sign Up", new_user_registration_path %>
-            </span>
+              </li>
         <% end %>
-      </a>
-      <!-- Everything in here gets hidden at 940px or less -->
-      <div class="nav-collapse">
-        <!-- menu items gets rendered here instead -->
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              <input type="text" placeholder="Email" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+          </form>
+        </div><!--/.navbar-collapse -->
       </div>
     </div>
-  </div>
-</div>
 
-<div class="flash">
+    <div class="container">
+     <div class="flash">
        <p class="notice"><%= notice %></p>
        <p class="alert"><%= alert %></p>
-</div>
+     </div>
+   </div>
 
-<%= yield %>
+    <%= yield %>
+      <hr>
 
-</body>
+      <footer>
+        <p>&copy; Company 2013</p>
+      </footer>
+    </div> <!-- /container -->
+
+  </body>
 </html>
+

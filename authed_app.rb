@@ -217,9 +217,10 @@ route "root to: 'welcome#index'"
 
 if yes?("Use Twitter bootstrap?")
   run "mv app/assets/stylesheets/application.css app/assets/stylesheets/application.css.scss"
-  run "echo '@import \"twitter/bootstrap\";' > app/assets/stylesheets/application.css.scss"
-  run "echo '//= require twitter/bootstrap' >> app/assets/javascripts/application.js"
+  append_file 'app/assets/javascripts/application.js', '//= require twitter/bootstrap'
+  append_file 'app/assets/stylesheets/application.css.scss', '@import "twitter/bootstrap";'
   run "curl https://raw.github.com/bigfleet/rails-templates/master/app.html.erb -o app/views/layouts/application.html.erb"
+  run "curl https://raw.github.com/bigfleet/rails-templates/master/front.html.erb -o app/views/welcome/index.html.erb"
 else
   puts "Please inspect your Gemfile to remove the gem"
   puts "Apapt the app/views/layouts/application.html.erb file to remove Bootstrap-style DOM"
