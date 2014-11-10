@@ -22,9 +22,6 @@ gem 'foreigner'
 
 gem_group :development, :test do
   gem 'rspec-rails'
-  gem 'pry'
-  gem 'pry-rails'
-  gem 'pry-awesome_print'
   gem 'guard-rspec'
   gem 'guard-bundler'
   gem 'rb-fsevent'

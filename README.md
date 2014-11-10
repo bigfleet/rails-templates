@@ -22,7 +22,8 @@ Usage
 The basic application can be created with this command:
 
 ```
-rails new YOUR_APP_NAME_HERE -m https://raw.github.com/bigfleet/rails-templates/master/rails_app.rb
+rails new YOUR_APP_NAME_HERE \
+  -m https://raw.github.com/bigfleet/rails-templates/master/rails_app.rb
 
 ```
 
@@ -30,7 +31,8 @@ An application that includes a reasonable devise install can be installed this
 way:
 
 ```
-rails new YOUR_APP_NAME_HERE -m https://raw.github.com/bigfleet/rails-templates/master/authed_app.rb
+rails new YOUR_APP_NAME_HERE \
+  -m https://raw.github.com/bigfleet/rails-templates/master/authed_app.rb
 
 ```
 
