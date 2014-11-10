@@ -48,6 +48,12 @@ PORT=5001 rails new YOUR_APP_NAME_HERE
 You will need to hit 'y' once, as I've specified some additions to a file that
 Rails has opinions on.
 
+Start it up!
+=========
+
+```
+bundle exec foreman start
+```
 
 Libraries
 =========
