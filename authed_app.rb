@@ -14,11 +14,13 @@ if is_windows
 end
 
 gem "devise"
-gem 'bootstrap-sass', '~> 3.1.1.1'
+gem 'bootstrap-sass', '~> 3.3.0'
+gem 'autoprefixer-rails'
 gem 'font-awesome-sass', '~> 4.1.0'
 gem 'bootstrap_form'
 gem 'kaminari'
 gem 'foreigner'
+gem 'rolify'
 
 gem_group :development, :test do
   gem 'rspec-rails'
@@ -279,6 +281,7 @@ run "rm public/index.html"
 generate "devise:install"
 generate "devise User"
 generate "devise:views"
+generate "rolify Role User"
 
 rake "db:migrate db:test:prepare"
 
@@ -295,11 +298,12 @@ route "root to: 'welcome#index'"
 
 if yes?("Use Twitter bootstrap?")
   file "app/assets/stylesheets/application.scss", <<-APPSASS
-@import "bootstrap";
-@import "font-awesome";
+  @import "bootstrap-sprockets";
+  @import "bootstrap";
+  @import "font-awesome";
 APPSASS
   run "rm app/assets/stylesheets/application.css"
-  append_file 'app/assets/javascripts/application.js', '//= require bootstrap'
+  append_file 'app/assets/javascripts/application.js', '//= require bootstrap-sprockets'
   run "curl https://raw.githubusercontent.com/bigfleet/rails-templates/master/app.html.erb -o app/views/layouts/application.html.erb"
   run "curl https://raw.githubusercontent.com/bigfleet/rails-templates/master/front.html.erb -o app/views/welcome/index.html.erb"
 else
