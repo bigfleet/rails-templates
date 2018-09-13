@@ -16,25 +16,22 @@ end
 gem "devise"
 gem 'bootstrap-sass', '~> 3.3.0'
 gem 'autoprefixer-rails'
-gem 'font-awesome-sass', '~> 4.1.0'
+gem 'font-awesome-sass', '~> 5.3.1'
 gem 'bootstrap_form'
 gem 'kaminari'
-gem 'foreigner'
 gem 'rolify'
 
 gem_group :development, :test do
   gem 'rspec-rails'
-  gem 'guard-rspec'
-  gem 'guard-bundler'
   gem 'rb-fsevent'
+  gem 'autotest-rails'
 end
 
 gem_group :test do
   gem 'capybara'
-  gem 'factory_girl_rails', '4.1.0'
+  gem 'factory_bot_rails', '4.11.1'
   gem 'forgery'
   gem 'launchy'
-  gem 'database_cleaner'
   gem "codeclimate-test-reporter", require: nil
 end
 
@@ -62,7 +59,7 @@ environment <<-APP_GENERATORS
       :routing_specs => false, 
       :controller_specs => false, 
       :request_specs => true
-    g.fixture_replacement :factory_girl, :dir => "spec/factories"
+    g.fixture_replacement :factory_bot, :dir => "spec/factories"
   end
   config.time_zone = 'Eastern Time (US & Canada)'
 APP_GENERATORS
@@ -173,26 +170,6 @@ RSpec.configure do |config|
 end
 FACTORY_GIRL
 
-file "spec/support/db_cleaner.rb", <<-DB_CLEANER
-require 'database_cleaner'
-RSpec.configure do |config|
-
-  config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with(:truncation)
-  end
-
-  config.before(:each) do
-    DatabaseCleaner.start
-  end
-
-  config.after(:each) do
-    DatabaseCleaner.clean
-  end
-
-end
-DB_CLEANER
-
 file ".env", <<-DOTENV
 PORT=#{port}
 RACK_ENV=development
@@ -272,7 +249,6 @@ generate "rspec:install"
 
 gsub_file 'spec/rails_helper.rb', "# Dir[Rails.root.join", "Dir[Rails.root.join"
 run "mkdir spec/features"
-run "bundle exec guard init"
 if is_windows
 else
   run "rm config/database.yml; cp config/database.yml.example config/database.yml"

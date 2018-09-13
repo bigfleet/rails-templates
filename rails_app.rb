@@ -1,4 +1,5 @@
 port = ENV["PORT"] || "5000"
+app_name = ARGV[1]
 
 require 'rbconfig'
 is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
@@ -9,12 +10,11 @@ is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
 #   config/database.yml.example and perform overwrite
 #   Write to readme
 #
-
-  gem "pg"
+gem "pg"
 if is_windows
   gem "thin"
   # https://github.com/ddollar/foreman/issues/348
-  gem "foreman", "0.61"
+  gem "foreman", "0.61.0"
  else
   gem "unicorn"
   gem "foreman"
@@ -22,18 +22,18 @@ end
 
 
 gem_group :development, :test do
-  gem 'rspec-rails', '2.13.0'
-  gem 'guard-rspec'
-  gem 'guard-bundler'
+  gem 'rspec-rails', '~> 3.8'
+  gem 'rspec-autotest'
   gem 'rb-fsevent'
 end
 
 gem_group :test do
   gem 'capybara'
-  gem 'factory_girl_rails', '4.1.0'
+  gem 'factory_bot_rails', '~> 4.11'
   gem 'forgery'
   gem 'launchy'
   gem 'database_cleaner'
+  gem 'ZenTest', '~> 4.11'
 end
 
 append_file '.gitignore', <<-GITIGNORE
@@ -52,7 +52,7 @@ environment <<-APP_GENERATORS
       :routing_specs => false, 
       :controller_specs => false, 
       :request_specs => true
-    g.fixture_replacement :factory_girl, :dir => "spec/factories"
+    g.fixture_replacement :factory_bot, :dir => "spec/factories"
   end
   config.time_zone = 'Eastern Time (US & Canada)'
 APP_GENERATORS
@@ -75,9 +75,9 @@ RSpec.configure do |config|
 end
 FOCUS
 
-file "spec/support/factory_girl.rb", <<-FACTORY_GIRL
+file "spec/support/factory_bot.rb", <<-FACTORY_BOT
 RSpec.configure do |config|
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 end
 FACTORY_GIRL
 
@@ -122,7 +122,7 @@ web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
 PROCFILE
 end
 
-app_name = ARGV[0]
+
 
 file "config/database.yml.example", <<-DATABASE
 development:
@@ -166,7 +166,6 @@ DATABASE
 run "bundle install"
 
 generate "rspec:install"
-run "bundle exec guard init"
 if is_windows
 else
   run "rm config/database.yml; cp config/database.yml.example config/database.yml"
