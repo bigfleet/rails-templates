@@ -25,6 +25,7 @@ gem_group :development, :test do
   gem 'rspec-rails'
   gem 'rb-fsevent'
   gem 'autotest-rails'
+  gem 'rubocop-rspec'
 end
 
 gem_group :test do
@@ -104,7 +105,7 @@ end
 CAPYBARA
 
 file "spec/support/forgery.rb", <<-FORGERY
-FactoryGirl.define do
+FactoryBot.define do
 
   sequence :email do |n|
     Forgery(:internet).email_address
@@ -125,11 +126,10 @@ end
 FORGERY
 
 file "spec/support/as_user.rb", <<-AS_USER
-include Devise::TestHelpers
-
-# gives us the login_as(@user) method when request object is not present
-include Warden::Test::Helpers
-Warden.test_mode!
+RSpec.configure do |config|
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :view
+end
 
 # Will run the given code as the user passed in
 def as_user(user=nil, &block)
@@ -166,7 +166,7 @@ FOCUS
 
 file "spec/support/factory_girl.rb", <<-FACTORY_GIRL
 RSpec.configure do |config|
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 end
 FACTORY_GIRL
 
@@ -298,7 +298,7 @@ run 'rm spec/factories/users.rb'
 file "spec/factories/users.rb", <<-USERS
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :user do
     email
     password "12345678"
