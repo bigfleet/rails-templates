@@ -14,9 +14,10 @@ if is_windows
 end
 
 gem "devise"
-gem 'bootstrap-sass', '~> 3.3.0'
+gem 'sassc-rails', '>= 2.1.0'
+gem 'bootstrap-sass', '~> 3.4.0'
 gem 'autoprefixer-rails'
-gem 'font-awesome-sass', '~> 5.3.1'
+gem 'font-awesome-sass', '~> 5.9.0'
 gem 'bootstrap_form'
 gem 'kaminari'
 gem 'rolify'
@@ -30,7 +31,7 @@ end
 
 gem_group :test do
   gem 'capybara'
-  gem 'factory_bot_rails', '4.11.1'
+  gem 'factory_bot_rails', '~> 5.0.2'
   gem 'forgery'
   gem 'launchy'
   gem "codeclimate-test-reporter", require: nil
@@ -68,23 +69,13 @@ APP_GENERATORS
 file ".travis.yml", <<-TRAVIS
 language: ruby
 rvm:
-  - "2.1.2"
+  - "2.2"
 cache: bundler
 before_script:
 - cp config/database.travis.yml config/database.yml
 - psql -c 'create database #{app_name}_test;' -U postgres
 - bundle exec rake db:migrate
-after_success:
-- curl -o bender https://your-key-location.com/
-- chmod 600 bender
-- ssh-add bender
-- bundle exec cap production deploy
-env:
-  - CODECLIMATE_REPO_TOKEN=TOKEN
-notifications:
-  hipchat:
-    rooms:
-      secure: TOKEN
+
 TRAVIS
 
 file "config/database.travis.yml", <<-TRAVISDB
@@ -180,26 +171,12 @@ if is_windows
 web: bundle exec thin start -p $PORT
 PROCFILE
 
-else
-if ENV['BOXEN_SOCKET_DIR']
 file "config/unicorn.rb", <<-UNICORN
-if ENV['RACK_ENV'] == 'development'
-  worker_processes 1
-  listen "#{ENV['BOXEN_SOCKET_DIR']}/#{app_name}", :backlog => 1024
-  timeout 120
-end
-
-after_fork do |server, worker|
-  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
-end
-UNICORN
-else
-  file "config/unicorn.rb", <<-UNICORN
 worker_processes 3
 timeout 30
 UNICORN
-end
-  file "Procfile", <<-PROCFILE
+
+file "Procfile", <<-PROCFILE
 web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
 PROCFILE
 end
