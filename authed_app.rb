@@ -14,18 +14,18 @@ if is_windows
 end
 
 gem "devise"
-gem 'sassc-rails', '>= 2.1.0'
-gem 'bootstrap-sass', '~> 3.4.0'
+gem 'sassc-rails'
+gem 'bootstrap', '~> 4.4.1'
 gem 'autoprefixer-rails'
 gem 'font-awesome-sass', '~> 5.9.0'
 gem 'bootstrap_form'
 gem 'kaminari'
 gem 'rolify'
+gem 'jquery-rails'
 
 gem_group :development, :test do
   gem 'rspec-rails'
   gem 'rb-fsevent'
-  gem 'autotest-rails'
   gem 'rubocop-rspec'
 end
 
@@ -155,11 +155,11 @@ RSpec.configure do |config|
 end
 FOCUS
 
-file "spec/support/factory_girl.rb", <<-FACTORY_GIRL
+file "spec/support/factory_bot.rb", <<-FACTORY_BOT
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 end
-FACTORY_GIRL
+FACTORY_BOT
 
 file ".env", <<-DOTENV
 PORT=#{port}
@@ -232,11 +232,10 @@ else
 end
 rake "db:create:all"
 
-run "rm public/index.html"
+#run "rm public/index.html"
 generate "devise:install"
 generate "devise User"
 generate "devise:views"
-generate "rolify Role User"
 
 file "spec/features/login_spec.rb", <<-LOGIN_SPEC
 require 'rails_helper'
@@ -299,12 +298,13 @@ route "root to: 'welcome#index'"
 
 if yes?("Use Twitter bootstrap?")
   file "app/assets/stylesheets/application.scss", <<-APPSASS
-  @import "bootstrap-sprockets";
   @import "bootstrap";
   @import "font-awesome";
 APPSASS
   run "rm app/assets/stylesheets/application.css"
-  append_file 'app/assets/javascripts/application.js', '//= require bootstrap-sprockets'
+  append_file 'app/javascript/packs/application.js', '//= require jquery3'
+  append_file 'app/javascript/packs/application.js', '//= require popper'
+  append_file 'app/javascript/packs/application.js', '//= require bootstrap-sprockets'
   run "curl https://raw.githubusercontent.com/bigfleet/rails-templates/master/app.html.erb -o app/views/layouts/application.html.erb"
   run "curl https://raw.githubusercontent.com/bigfleet/rails-templates/master/front.html.erb -o app/views/welcome/index.html.erb"
 else
@@ -316,3 +316,4 @@ git :init
 git add: "."
 git commit: %Q{ -m 'Initial commit' }
 
+generate "rolify Role User"
