@@ -3,6 +3,15 @@ rails-templates
 
 Application and engine (hopefully)
 
+Prerequisites
+=============
+
+New Ubuntu systems will require
+```
+sudo apt-get install libpq-dev
+```
+currently, as the `pg` gem is in the payload.
+
 Motivation
 ==========
 

@@ -1,5 +1,5 @@
 port = ENV["PORT"] || "5000"
-app_name = ARGV[1]
+app_name = ARGV[2]
 
 require 'rbconfig'
 is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
@@ -15,13 +15,17 @@ end
 
 gem "devise"
 gem 'sassc-rails'
-gem 'bootstrap', '~> 4.4.1'
 gem 'autoprefixer-rails'
 gem 'font-awesome-sass', '~> 5.9.0'
-gem 'bootstrap_form'
 gem 'kaminari'
 gem 'rolify'
 gem 'jquery-rails'
+gem 'foundation-rails'
+gem 'modernizr-rails'
+
+gem_group :development do
+  gem 'rails_layout'
+end
 
 gem_group :development, :test do
   gem 'rspec-rails'
@@ -30,7 +34,7 @@ gem_group :development, :test do
 end
 
 gem_group :test do
-  gem 'capybara'
+  #gem 'capybara'
   gem 'factory_bot_rails', '~> 5.0.2'
   gem 'forgery'
   gem 'launchy'
@@ -65,25 +69,6 @@ environment <<-APP_GENERATORS
   end
   config.time_zone = 'Eastern Time (US & Canada)'
 APP_GENERATORS
-
-file ".travis.yml", <<-TRAVIS
-language: ruby
-rvm:
-  - "2.2"
-cache: bundler
-before_script:
-- cp config/database.travis.yml config/database.yml
-- psql -c 'create database #{app_name}_test;' -U postgres
-- bundle exec rake db:migrate
-
-TRAVIS
-
-file "config/database.travis.yml", <<-TRAVISDB
-test:
-  adapter: postgresql
-  database: #{app_name}_test
-  username: postgres
-TRAVISDB
 
 file "spec/support/capybara.rb", <<-CAPYBARA
 require 'capybara/rails'
@@ -222,6 +207,10 @@ DATABASE
 
 run "bundle install"
 
+insert_into_file "app/assets/config/manifest.js" do
+  "//= link_directory ../javascripts .js"
+end
+
 generate "rspec:install"
 
 gsub_file 'spec/rails_helper.rb', "# Dir[Rails.root.join", "Dir[Rails.root.join"
@@ -230,12 +219,22 @@ if is_windows
 else
   run "rm config/database.yml; cp config/database.yml.example config/database.yml"
 end
-rake "db:create:all"
+run "bundle exec rake db:create:all"
 
-#run "rm public/index.html"
 generate "devise:install"
 generate "devise User"
 generate "devise:views"
+
+generate "foundation:install"
+generate "layout:install foundation5"
+remove_file "app/assets/stylesheets/1st_load_framework.css.scss"
+create_file 'app/assets/stylesheets/1st_load_framework.css.scss' do <<-EOF
+// import the CSS framework
+@import "foundation";
+EOF
+end
+
+gsub_file 'app/views/layouts/application.html.erb', "'vendor/modernizr'", ":modernizr"
 
 file "spec/features/login_spec.rb", <<-LOGIN_SPEC
 require 'rails_helper'
@@ -283,7 +282,7 @@ FactoryBot.define do
 end
 USERS
 
-rake "db:migrate db:test:prepare"
+run "bundle exec rake db:migrate db:test:prepare"
 
 # Handles two suggestions from Devise install process
 
@@ -293,24 +292,7 @@ generate "controller welcome index"
 
 route "root to: 'welcome#index'"
 
-# Installs twitter bootstrap
-#
 
-if yes?("Use Twitter bootstrap?")
-  file "app/assets/stylesheets/application.scss", <<-APPSASS
-  @import "bootstrap";
-  @import "font-awesome";
-APPSASS
-  run "rm app/assets/stylesheets/application.css"
-  append_file 'app/javascript/packs/application.js', '//= require jquery3'
-  append_file 'app/javascript/packs/application.js', '//= require popper'
-  append_file 'app/javascript/packs/application.js', '//= require bootstrap-sprockets'
-  run "curl https://raw.githubusercontent.com/bigfleet/rails-templates/master/app.html.erb -o app/views/layouts/application.html.erb"
-  run "curl https://raw.githubusercontent.com/bigfleet/rails-templates/master/front.html.erb -o app/views/welcome/index.html.erb"
-else
-  puts "Please inspect your Gemfile to remove the gem"
-  puts "Adapt the app/views/layouts/application.html.erb file to remove Bootstrap-style DOM"
-end
 
 git :init
 git add: "."
