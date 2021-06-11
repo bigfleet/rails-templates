@@ -11,6 +11,6 @@ gem_group :development, :test do
 end
 
 gem_group :test do
-  gem 'factory_bot_rails', '~> 4.11'
+  gem 'factory_bot_rails'
   gem 'forgery'
 end
