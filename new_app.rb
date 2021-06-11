@@ -37,5 +37,6 @@ after_bundle do
   git commit: "-a -m 'Initial commit'"
 
   run "cp config/database.yml.devcontainer config/database.yml"
-  rake "db:create:all"
+  # will probably need this to be a compose start time sort of thing, create and migrate.
+  #rake "db:create:all"
 end
