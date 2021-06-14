@@ -5,6 +5,6 @@
 	"service": "app",
 
 	"remoteUser": "vscode",
-    "workspaceFolder": "/workspace/testloop",
+    "workspaceFolder": "/workspace",
 	"postCreateCommand": "bundle install"
 }
