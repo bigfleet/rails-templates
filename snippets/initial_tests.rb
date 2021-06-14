@@ -33,7 +33,7 @@ USER_SPEC
 
 run 'rm spec/factories/users.rb'
 file "spec/factories/users.rb", <<-USERS
-# Read about factories at https://github.com/thoughtbot/factory_girl
+# Read about factories at https://github.com/thoughtbot/factory_bot
 
 FactoryBot.define do
   factory :user do

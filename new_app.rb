@@ -48,13 +48,13 @@ after_bundle do
   
   # 'Write' initial tests
   apply "snippets/initial_tests.rb"
+  apply "testing/post_config.rb"
 
   # Apply auth config
   apply  "auth/devise/config.rb"
 
   # Silly home page
   generate "controller welcome index"
-
   route "root to: 'welcome#index'"
 
   git :init
