@@ -10,6 +10,6 @@ namespace :dbdev do
     sh "PGPASSWORD=postgres psql -U postgres -h db -f db/skel/drop.sql"
   end
 
-  task dbr: ["dbdev:down", "dbdev:up", "db:migrate"] do
+  task dbr: ["dbdev:down", "dbdev:up", "db:migrate", "db:test:prepare"] do
   end
 end

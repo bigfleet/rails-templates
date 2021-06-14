@@ -15,6 +15,9 @@ apply     "gems/basics.rb"
 # Configure generators
 apply     "snippets/generator_configs.rb"
 
+# Configure testing
+apply     "snippets/testing_config.rb"
+
 # Prepare DB config
 apply     "databases/postgresql/config.rb"
 run       "rm config/database.yml"
@@ -37,11 +40,22 @@ after_bundle do
   generate "devise User"
   generate "devise:views"
 
-  # Setup devise
+  # Setup rspec
   generate "rspec:install"
 
   # Install bootstrap
   apply "snippets/bootstrap.rb"
+  
+  # 'Write' initial tests
+  apply "snippets/initial_tests.rb"
+
+  # Apply auth config
+  apply  "auth/devise/config.rb"
+
+  # Silly home page
+  generate "controller welcome index"
+
+  route "root to: 'welcome#index'"
 
   git :init
   git add: '.'
