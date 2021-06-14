@@ -3,6 +3,9 @@ def source_paths
   [__dir__]
 end
 
+# Git configuration
+apply     "snippets/gitignore.rb"
+
 # Set up VSCode dev container
 directory "vscode/devcontainer", ".devcontainer"
 
@@ -14,6 +17,14 @@ apply     "snippets/generator_configs.rb"
 
 # Prepare DB config
 apply     "databases/postgresql/config.rb"
+run       "rm config/database.yml"
+template  "databases/postgresql/database.yml.erb", "config/database.yml"
+run       "mkdir -p db/skel"
+template  "databases/postgresql/skel.create.sql.erb", "db/skel/create.sql"
+template  "databases/postgresql/skel.drop.sql.erb", "db/skel/drop.sql"
+
+# DB development rake tasks
+copy_file "rake/dbdev.rake", "lib/tasks/dbdev.rake"
 
 after_bundle do
   # Basic pages
@@ -36,7 +47,4 @@ after_bundle do
   git add: '.'
   git commit: "-a -m 'Initial commit'"
 
-  run "cp config/database.yml.devcontainer config/database.yml"
-  # will probably need this to be a compose start time sort of thing, create and migrate.
-  #rake "db:create:all"
 end

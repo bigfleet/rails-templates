@@ -1,0 +1,28 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: <%= app_name %>_development
+  pool: 5
+  host: db
+  username: postgres
+  password: postgres
+
+test: &test
+  adapter: postgresql
+  encoding: unicode
+  database: <%= app_name %>_test
+  pool: 5
+  min_messages: warning
+  host: db
+  username: postgres
+  password: postgres
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: <%= app_name %>_production
+  pool: 5
+  min_messages: warning
+  host: db
+  username: postgres
+  password: postgres
