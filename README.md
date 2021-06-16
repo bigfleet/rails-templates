@@ -1,29 +1,24 @@
 rails-templates
 ===============
 
-Application and engine (hopefully)
+The @bigfleet way to start a Rails app
 
 Prerequisites
 =============
 
-New Ubuntu systems will require
-```
-sudo apt-get install libpq-dev
-```
-currently, as the `pg` gem is in the payload.
 
 Motivation
 ==========
 
-I want to share the tools that I use to create applications with the world, and
-with my students, in the name of improvement.  Starting an application is
-another perfect example of something where you do not need to understand
-everything before you run it for the first time.  As students and newcomers
-become more familiar with the landscape, they can assess the choices here and
-decide whether or not they are right for them.
+I first created this for some students for Rails classes I taught several years ago.
 
-It also might serve as a helpful referendum and statement about software
-erosion.
+In the time since, I have created many Rails apps, and have returned to this template to help.
+
+When beginning a project,  you do not need to understand everything first.  As students 
+and newcomers become more familiar with the landscape, they can assess the choices here and
+decide whether or not they are right for them.  
+
+The git history will speak here about [software erosion](https://en.wikipedia.org/wiki/Software_rot).
 
 Usage
 =====
@@ -32,42 +27,29 @@ The basic application can be created with this command:
 
 ```
 rails new YOUR_APP_NAME_HERE \
-  -m https://raw.github.com/bigfleet/rails-templates/master/rails_app.rb
+  -m https://raw.github.com/bigfleet/rails-templates/master/new_app.rb
 
 ```
 
-An application that includes a reasonable devise install can be installed this
-way:
-
-```
-rails new YOUR_APP_NAME_HERE \
-  -m https://raw.github.com/bigfleet/rails-templates/master/authed_app.rb
-
-```
-
-If you have used the template more than once, you may want to put the
-application on a different port.  You can do so in the command with one that
-prepends ```PORT=5001``` like this:
-
-```
-PORT=5001 rails new YOUR_APP_NAME_HERE
- -m https://raw.github.com/bigfleet/rails-templates/master/rails_app.rb
-```
-
-You will need to hit 'y' once, as I've specified some additions to a file that
-Rails has opinions on.
 
 Start it up!
-=========
+============
+
+When VS Code asks you if you'd like to open in a dev container, say 'yes'.
+
+This will get you to a terminal.
 
 ```
-bundle exec foreman start
+rails s -b 0.0.0.0
 ```
 
-Libraries
-=========
+Testing
+=======
 
-Unicorn, foreman, and postgres are used to get you started on the web server
-side.
+Rspec and factory bot are used for testing.
 
-Rspec and factory girl are used for testing.
+References
+==========
+
+* [Suspenders](https://github.com/thoughtbot/suspenders) -- the king of Rails templates.  (Maybe I should just replace my preferences with Thoughtbots...)
+* [Thor API docs](https://www.rubydoc.info/gems/thor/Thor) -- for finding what you can do in these sorts of .rb files, since the guides aren't comprehensive.

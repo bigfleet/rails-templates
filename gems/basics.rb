@@ -8,6 +8,7 @@ gem_group :development, :test do
   gem 'rspec-rails'
   gem 'rb-fsevent'
   gem 'rubocop-rspec'
+  gem 'climate_control'
 end
 
 gem_group :test do
