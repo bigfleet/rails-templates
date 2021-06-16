@@ -43,10 +43,14 @@ This will get you to a terminal.
 rails s -b 0.0.0.0
 ```
 
-Testing
-=======
+Gems
+====
 
-Rspec and factory bot are used for testing.
+* [RSpec](https://rspec.info)
+* [factory_bot](https://github.com/thoughtbot/factory_bot)
+* [climate_control](https://github.com/thoughtbot/climate_control)
+* [recipient_interceptor](https://github.com/croaky/recipient_interceptor)
+
 
 References
 ==========

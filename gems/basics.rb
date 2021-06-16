@@ -9,6 +9,7 @@ gem_group :development, :test do
   gem 'rb-fsevent'
   gem 'rubocop-rspec'
   gem 'climate_control'
+  gem "recipient_interceptor"
 end
 
 gem_group :test do
